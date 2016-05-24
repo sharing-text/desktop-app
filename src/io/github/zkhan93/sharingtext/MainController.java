@@ -6,10 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.util.Callback;
 
 public class MainController {
 	@FXML
@@ -21,6 +19,9 @@ public class MainController {
 	@FXML
 	private ListView<Client> listViewClientList;
 
+	private ObservableList<Client> clientList;
+	private MainApplication mainApp;
+
 	@FXML
 	public void clearText(ActionEvent event) {
 		if (textAreaSource != null)
@@ -31,7 +32,7 @@ public class MainController {
 
 	@FXML
 	public void sendText(ActionEvent event) {
-		System.out.println("msg send.");
+		
 	}
 
 	public void log(String msg) {
@@ -40,29 +41,16 @@ public class MainController {
 	}
 
 	public boolean addClient(Client client) {
-		
-		
-		return false;
-		
+		return clientList.add(client);
 	}
 
 	@FXML
 	public void initialize() {
-		ObservableList<Client> listdata = FXCollections.<Client>emptyObservableList();
-		listViewClientList.setItems(listdata);
-		listViewClientList.setCellFactory(new Callback<ListView<Client>, ListCell<Client>>() {
+		clientList = FXCollections.observableArrayList();
+		listViewClientList.setItems(clientList);
+	}
 
-			@Override
-			public ListCell<Client> call(ListView<Client> param) {
-				ListCell<Client> cell = new ListCell<Client>() {
-					@Override
-					protected void updateItem(Client item, boolean empty) {
-						super.updateItem(item, empty);
-						setText(item.toString());
-					}
-				};
-				return cell;
-			}
-		});
+	public void setMainApp(MainApplication mainApp) {
+		this.mainApp = mainApp;
 	}
 }

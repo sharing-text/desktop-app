@@ -1,6 +1,5 @@
 package io.github.zkhan93.sharingtext;
 
-import io.github.zkhan93.sharingtext.models.Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
-	
+	MainController mainController;
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -17,12 +16,16 @@ public class MainApplication extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader fxmlLoader;
-		MainController mainController;
+		
 		try {
-			fxmlLoader = new FXMLLoader(getClass().getResource("view/MainView.fxml"));
-			Parent root = (Parent) fxmlLoader.load();
+			fxmlLoader = new FXMLLoader(getClass().getResource("views/MainView.fxml"));
+			
 			mainController = fxmlLoader.getController();
-			mainController.addClient(new Client("Zeeshan Khan client"));
+			//mainController.setMainApp(this);
+			
+			startClientConnectionService();
+			
+			Parent root = (Parent) fxmlLoader.load();
 			Scene scene = new Scene(root);
 			stage.setTitle("Sharing Text");
 			stage.setScene(scene);
@@ -34,5 +37,10 @@ public class MainApplication extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+	private void startClientConnectionService(){
+		ClientConnectionTask service=new ClientConnectionTask(mainController);
+		service.valueProperty();
+		
 	}
 }

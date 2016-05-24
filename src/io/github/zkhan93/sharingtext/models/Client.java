@@ -6,6 +6,15 @@ public class Client {
 	private String name;
 	private Socket socket;
 
+	public Client(String name) {
+		this.name = name;
+	}
+
+	public Client(String name, Socket socket) {
+		this.name = name;
+		this.socket = socket;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -22,10 +31,9 @@ public class Client {
 		this.socket = socket;
 	}
 
-	public Client(String name) {
-		this.name = name;
+	public Client() {
+		name = "nothig";
 	}
-	public Client(){name="nothig";}
 
 	@Override
 	public String toString() {
