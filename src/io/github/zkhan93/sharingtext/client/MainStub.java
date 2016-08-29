@@ -5,50 +5,40 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import io.github.zkhan93.sharingtext.SocketReader;
+import util.Util;
+
 public class MainStub {
 	public static BufferedReader user_in;
 	public static PrintWriter socket_out;
+	
 	static {
 		user_in = new BufferedReader(new InputStreamReader(System.in));
 	}
 
 	public static void main(String args[]) {
-		try {
-			Socket socket = new Socket("127.0.0.1", 12345);
-			System.out.println("connected with server");
-			ServerReader serverReader = new ServerReader(socket);
-			serverReader.start();
-			String line;
-			socket_out = new PrintWriter(socket.getOutputStream());
-			while ((line = user_in.readLine()) != null) {
-				socket_out.write(line);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	public static class ServerReader extends Thread {
-		BufferedReader socket_in;
-
-		@Override
-		public void run() {
-			String line;
+		while (true) {
 			try {
-				while ((line = socket_in.readLine()) != null) {
-					System.out.print("Server:");
-					System.out.println(line);
+				Socket socket = new Socket("127.0.0.1", 12345);
+				Util.Log("connected with server");
+				SocketReader serverReader = new SocketReader(socket);
+				serverReader.start();
+				String line;
+				socket_out = new PrintWriter(socket.getOutputStream(),true);
+				Util.Log("Write something");
+				while (!socket_out.checkError() && (line = user_in.readLine()) != null) {
+					socket_out.write(line);
+					Util.Log("Wrote :"+line);
+//					socket_out.flush();
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-
-		public ServerReader(Socket socket) {
-			try {
-				socket_in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			} catch (Exception ex) {
-				ex.printStackTrace();
+				Util.Log("Connection closed");
+				try {
+					Util.Log("sleeping for 1 sec");
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					Util.Log("cannot sleep");
+				}
 			}
 		}
 	}

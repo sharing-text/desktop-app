@@ -6,8 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
+import util.Util;
 
 public class MainController {
 	@FXML
@@ -18,9 +21,15 @@ public class MainController {
 	private TextArea textAreaSource;
 	@FXML
 	private ListView<Client> listViewClientList;
+	@FXML
+	private ListView<String> listViewMessages;
+	@FXML
+	private Label ip;
+	@FXML
+	private ImageView barCode;
 
 	private ObservableList<Client> clientList;
-	private MainApplication mainApp;
+	private ObservableList<String> messagesList;
 
 	@FXML
 	public void clearText(ActionEvent event) {
@@ -32,7 +41,9 @@ public class MainController {
 
 	@FXML
 	public void sendText(ActionEvent event) {
-		
+		clientList.forEach(client -> client.sendText(textAreaSource.getText()));
+		Util.Log("write: "+textAreaSource.getText());
+		textAreaSource.clear();
 	}
 
 	public void log(String msg) {
@@ -41,16 +52,22 @@ public class MainController {
 	}
 
 	public boolean addClient(Client client) {
+		Util.Log("adding client: " + client.toString());
 		return clientList.add(client);
+	}
+
+	public void addMessage(String msg) {
+		if (msg != null) {
+			Util.Log("adding msg: " + msg);
+			messagesList.add(msg);
+		}
 	}
 
 	@FXML
 	public void initialize() {
 		clientList = FXCollections.observableArrayList();
 		listViewClientList.setItems(clientList);
-	}
-
-	public void setMainApp(MainApplication mainApp) {
-		this.mainApp = mainApp;
+		messagesList = FXCollections.observableArrayList();
+		listViewMessages.setItems(messagesList);
 	}
 }
